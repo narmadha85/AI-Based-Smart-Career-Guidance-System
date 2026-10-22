@@ -106,41 +106,6 @@ http://127.0.0.1:5000
 
 ---
 
-## 🧪 Testing the Application (Sample Student Profiles)
-
-To test the application, navigate to `http://127.0.0.1:5000/assess`. You can click any of the **Quick Demo Presets** or manually input one of the test profiles below:
-
-### Sample 1: The AI/ML Engineer Profile
-- **Name**: Priya Sharma
-- **Education**: Bachelor's in CS / IT
-- **Curiosity Focus**: Artificial Intelligence & Deep Learning
-- **Academic Strengths**: Math (5/5), Programming (5/5), DSA (4/5), Databases (4/5), Networks (2/5)
-- **Domain Interests**: AI/ML (5/5), Data Science (5/5), Software (3/5)
-- **Skills Selected**: Python, Machine Learning, Data Analytics, SQL, Linux & Git
-- **Soft Skills**: Problem Solving (5/5), Abstract Thinking (5/5)
-- **Expected Prediction**: **AI/ML Engineer** (~90%+ Confidence)
-
-### Sample 2: The Cybersecurity Analyst Profile
-- **Name**: Karan Mehta
-- **Education**: Bachelor's in IT
-- **Curiosity Focus**: Ethical Hacking & Network Security
-- **Academic Strengths**: Networks (5/5), Cybersecurity (5/5), Programming (4/5), Math (3/5)
-- **Domain Interests**: Security & Hacking (5/5), Software (3/5), Web (2/5)
-- **Skills Selected**: Network Security, Linux & Git, Python, Cloud Basics
-- **Soft Skills**: Problem Solving (5/5), Abstract Thinking (4/5)
-- **Expected Prediction**: **Cybersecurity Analyst** (~85%+ Confidence)
-
-### Sample 3: The Full-Stack Web Developer Profile
-- **Name**: Rahul Verma
-- **Education**: Bachelor's in Computer Science
-- **Curiosity Focus**: Web Applications & Frontend Design
-- **Academic Strengths**: Web Technologies (5/5), Programming (4/5), Databases (4/5)
-- **Domain Interests**: Web Development (5/5), Software (4/5), AI/ML (2/5)
-- **Skills Selected**: JavaScript, HTML/CSS, Python, SQL, Cloud Basics
-- **Soft Skills**: Creative Design (5/5), Problem Solving (4/5)
-- **Expected Prediction**: **Web Developer** (~88%+ Confidence)
-
----
 
 ## 🧠 Machine Learning Model Details
 
@@ -185,29 +150,8 @@ From model training, the most influential features determining career placement 
 
 ---
 
-## 🎓 College Mini-Project Viva Q&A Guide
 
-Prepare these frequently asked questions for your project review:
 
-### Q1: What is the core objective of this mini-project?
-**Answer**: To bridge the gap between academic education and industry expectations by providing students with an automated, data-driven career counseling system. It uses machine learning to classify student competency profiles into suitable career tracks and provides personalized skill-gap roadmaps.
-
-### Q2: Why did you choose Random Forest over a single Decision Tree?
-**Answer**: A single Decision Tree is prone to high variance and overfitting because it creates deep, complex decision splits on specific training samples. Random Forest creates an ensemble of 150 diverse trees through bagging (bootstrap aggregating) and random feature subset selection. Aggregating their predictions cancels out individual errors, resulting in higher generalization and smoother `predict_proba()` probability outputs.
-
-### Q3: How do you calculate the match percentage score?
-**Answer**: The matching score is extracted directly from the model's `predict_proba()` method. It calculates the proportion of trees in the Random Forest ensemble that voted for that specific career class, multiplied by 100.
-
-### Q4: How is the Skill Gap Analysis performed?
-**Answer**: In `roadmap_data.py`, we maintain an industry-standard skill requirement list for each of the five career domains. When a career is predicted, the student's selected skills are compared against the required skills using set operations to identify matching ("Owned") skills and missing ("Gap") skills.
-
-### Q5: How is user data stored and retrieved?
-**Answer**: We use SQLite (`instance/career_guidance.db`) with an `assessments` table. When an assessment is submitted, the student demographics, raw input feature JSON, predicted career, match score, and skill gaps are inserted and indexed by an auto-incrementing ID.
-
-### Q6: What steps did you take to prevent data leakage during training?
-**Answer**: We separated features \(X\) from the target label \(y\), and performed a stratified 80/20 train-test split (`stratify=y`) before evaluating model performance. The test accuracy (98%) was evaluated exclusively on unseen test data.
-
----
 
 ## 📄 License & Attribution
 Developed as an academic Mini-Project for Computer Science & Artificial Intelligence / Machine Learning coursework.
