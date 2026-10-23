@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}Student Assessment - AI-Based Career Guidance{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2.5rem; padding-bottom: 3.5rem;">
+    <!-- Page Header -->
+    <div style="text-align: center; max-width: 750px; margin: 0 auto 2rem;">
+        <span class="badge badge-primary" style="margin-bottom: 0.75rem;">Intelligent Profiler</span>
+        <h1 style="font-size: 2.4rem; margin-bottom: 0.75rem;">Comprehensive Student Assessment</h1>
+        <p style="font-size: 1.05rem;">
+            Provide your academic background, subject ratings, and technical proficiencies. Our machine learning model will analyze your profile and recommend the most suitable career path.
+        </p>
+    </div>
+
+    <!-- Demo Presets Bar (For instant demo during Viva / Evaluation) -->
+    <div class="demo-preset-bar">
+        <div class="demo-preset-label">⚡ Viva Quick Demo Presets:</div>
+        <button type="button" class="preset-btn" onclick="loadPreset('aiml')">🤖 AI/ML Engineer Preset</button>
+        <button type="button" class="preset-btn" onclick="loadPreset('webdev')">🌐 Web Developer Preset</button>
+        <button type="button" class="preset-btn" onclick="loadPreset('cybersecurity')">🛡️ Cybersecurity Preset</button>
+        <button type="button" class="preset-btn" onclick="loadPreset('data')">📊 Data Analyst Preset</button>
+        <button type="button" class="preset-btn" onclick="loadPreset('software')">💻 Software Dev Preset</button>
+    </div>
+
+    <!-- Main Assessment Form -->
+    <form action="{{ url_for('assess') }}" method="POST" class="form-card" id="assessmentForm">
+        
+        <!-- Section 1: Basic Information -->
+        <div class="form-group-title">
+            <div class="step-num">1</div>
+            <div>Student Information & Education</div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-field">
+                <label for="student_name">Full Name <span style="color: var(--danger);">*</span></label>
+                <input type="text" id="student_name" name="student_name" class="form-control" placeholder="e.g. Priya Sharma" required>
+            </div>
+            <div class="form-field">
+                <label for="email">Email Address <span class="field-hint">(optional)</span></label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="e.g. priya@example.com">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-field">
+                <label for="education_level">Current / Highest Education Level <span style="color: var(--danger);">*</span></label>
+                <select id="education_level" name="education_level" class="form-control" required>
+                    <option value="" disabled selected>Select your education level...</option>
+                    <option value="High School (12th Grade)">High School / Intermediate (12th Grade)</option>
+                    <option value="Diploma in Engineering">Diploma in Engineering / Polytech</option>
+                    <option value="Bachelor's in CS / IT">Bachelor's Degree in CS / IT (B.Tech / B.E / BCA / B.Sc)</option>
+                    <option value="Bachelor's in Non-CS">Bachelor's Degree in Other Stream (ECE / Mech / Commerce / Arts)</option>
+                    <option value="Master's / Post Graduate">Master's Degree (M.Tech / MCA / M.Sc / MBA)</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label for="primary_interest">Primary Area of Curiosity <span style="color: var(--danger);">*</span></label>
+                <select id="primary_interest" name="primary_interest" class="form-control" required>
+                    <option value="" disabled selected>Select your strongest interest area...</option>
+                    <option value="Artificial Intelligence & Deep Learning">Artificial Intelligence & Deep Learning</option>
+                    <option value="Web Applications & Frontend Design">Web Applications & Frontend Design</option>
+                    <option value="Ethical Hacking & Network Security">Ethical Hacking & Network Security</option>
+                    <option value="Business Intelligence & Data Analytics">Business Intelligence & Data Analytics</option>
+                    <option value="Backend Systems & Software Engineering">Backend Systems & Software Engineering</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Section 2: Academic Strengths (Ratings 1-5) -->
+        <div class="form-group-title" style="margin-top: 2rem;">
+            <div class="step-num">2</div>
+            <div>Academic Strengths & Subject Affinity <span style="font-size: 0.85rem; font-weight: normal; color: var(--text-muted);">(Rate your affinity from 1 = Beginner to 5 = Strong Mastery)</span></div>
+        </div>
+
+        <div class="grid-2">
+            <div class="rating-item">
+                <div class="rating-header">
+                    <span class="rating-title">📐 Mathematics & Statistics</span>
+                    <span class="rating-value-badge" id="math_score_badge">3 / 5</span>
+                </div>
+                <input type="range" id="math_score" name="math_score" min="1" max="5" value="3">
+                <span class="field-hint">Linear algebra, probability, calculus, discrete math</span>
+            </div>
+
+            <div class="rating-item">
+                <div class="rating-header">
+                    <span class="rating-title">💻 Core Programming & Logic</span>
+                    <span class="rating-value-badge" id="programming_score_badge">3 / 5</span>
+                </div>
+                <input type="range" id="programming_score" name="programming_score" min="1" max="5" value="3">
+                <span class="field-hint">Coding syntax, loops, OOP concepts, modular functions</span>
+            </div>
+
+            <div class="rating-item">
+                <div class="rating-header">
+                    <span class="rating-title">🌳 Data Structures & Algorithms</span>
+                    <span class="rating-value-badge" id="data_structures_score_badge">3 / 5</span>
+                </div>
+                <input type="range" id="data_structures_score" name="data_structures_score" min="1" max="5" value="3">
+                <span class="field-hint">Arrays, linked lists, trees, graphs, sorting, Big-O</span>
+            </div>
+
+            <div class="rating-item">
+                <div class="rating-header">
+                    <span class="rating-title">🌐 Computer Networks & Protocols</span>
+                    <span class="rating-value-badge" id="networking_score_badge">3 / 5</span>
+                </div>
+                <input type="range" id="networking_score" name="networking_score" min="1" max="5" value="3">
+                <span class="field-hint">TCP/IP, DNS, OSI model, routing, sockets</span>
+            </div>
+
+            <div class="rating-item">
+                <div class="rating-header">
+                    <span class="rating-title">🌍 Web Technologies & Protocols</span>
+                    <span class="rating-value-badge" id="web_technologies_score_badge">3 / 5</span>
+                </div>
+                <input type="range" id="web_technologies_score" name="web_technologies_score" min="1" max="5" value="3">
+                <span class="field-hint">HTML5, CSS, client-server model, HTTP/HTTPS</span>
+            </div>
+
+            <div class="rating-item">
+                <div class="rating-header">
+                    <span class="rating-title">🛡️ Cybersecurity & Defensive Principles</span>
+                    <span class="rating-value-badge" id="cybersecurity_score_badge">3 / 5</span>
+                </div>
+                <input type="range" id="cybersecurity_score" name="cybersecurity_score" min="1" max="5" value="3">
+                <span class="field-hint">Cryptography, threats, access control, defenses</span>
+            </div>
+
+            <div class="rating-item" style="grid-column: 1 / -1;">
+                <div class="rating-header">
+                    <span class="rating-title">🗄️ Database Systems & SQL</span>
+                    <span class="rating-value-badge" id="database_score_badge">3 / 5</span>
+                </div>
+                <input type="range" id="database_score" name="database_score" min="1" max="5" value="3">
+                <span class="field-hint">Relational tables, SQL queries, normalization, ACID properties</span>
+            </div>
+        </div>
+
+        <!-- Section 3: Technical Domain Passions -->
+        <div class="form-group-title" style="margin-top: 2rem;">
+            <div class="step-num">3</div>
+            <div>Technical Domain Interests <span style="font-size: 0.85rem; font-weight: normal; color: var(--text-muted);">(What kind of work excites you most?)</span></div>
+        </div>
+
+        <div class="grid-2">
+            <div class="rating-item">
+                <div class="rating-header">
+                    <span class="rating-title">⚙️ Software Engineering & Architecture</span>
+                    <span class="rating-value-badge" id="interest_software_badge">3 / 5</span>
+                </div>
+                <input type="range" id="interest_software" name="interest_software" min="1" max="5" value="3">
+                <span class="field-hint">Building backend systems, APIs, microservices, and apps</span>
+            </div>
+
+            <div class="rating-item">
+                <div class="rating-header">
+                    <span class="rating-title">📈 Data Science & Statistical Insights</span>
+                    <span class="rating-value-badge" id="interest_data_badge">3 / 5</span>
+                </div>
+                <input type="range" id="interest_data" name="interest_data" min="1" max="5" value="3">
+                <span class="field-hint">Finding business trends, analyzing numbers, generating charts</span>
+            </div>
+
+            <div class="rating-item">
+                <div class="rating-header">
+                    <span class="rating-title">🤖 Artificial Intelligence & Machine Learning</span>
+                    <span class="rating-value-badge" id="interest_ai_ml_badge">3 / 5</span>
+                </div>
+                <input type="range" id="interest_ai_ml" name="interest_ai_ml" min="1" max="5" value="3">
+                <span class="field-hint">Training algorithms, neural networks, predictive modeling</span>
+            </div>
+
+            <div class="rating-item">
+                <div class="rating-header">
+                    <span class="rating-title">🔒 Information Security & Ethical Hacking</span>
+                    <span class="rating-value-badge" id="interest_security_badge">3 / 5</span>
+                </div>
+                <input type="range" id="interest_security" name="interest_security" min="1" max="5" value="3">
+                <span class="field-hint">Hunting vulnerabilities, protecting networks, malware defense</span>
+            </div>
+
+            <div class="rating-item" style="grid-column: 1 / -1;">
+                <div class="rating-header">
+                    <span class="rating-title">🎨 Web Development & Interactive User Experiences</span>
+                    <span class="rating-value-badge" id="interest_web_badge">3 / 5</span>
+                </div>
+                <input type="range" id="interest_web" name="interest_web" min="1" max="5" value="3">
+                <span class="field-hint">Designing engaging websites, interactive dashboards, mobile web</span>
+            </div>
+        </div>
+
+        <!-- Section 4: Current Technical Skills -->
+        <div class="form-group-title" style="margin-top: 2rem;">
+            <div class="step-num">4</div>
+            <div>Current Technical Skills <span style="font-size: 0.85rem; font-weight: normal; color: var(--text-muted);">(Select all technologies you have learned or worked with)</span></div>
+        </div>
+
+        <p style="font-size: 0.9rem; margin-bottom: 0.75rem;">
+            Select all skills that apply to your current knowledge. This is directly used for both <strong>ML classification</strong> and <strong>automated skill-gap analysis</strong>.
+        </p>
+
+        <div class="skills-grid">
+            <div class="skill-pill">
+                <input type="checkbox" id="skill_python" name="skills" value="skill_python">
+                <label for="skill_python">🐍 Python</label>
+            </div>
+            <div class="skill-pill">
+                <input type="checkbox" id="skill_java" name="skills" value="skill_java">
+                <label for="skill_java">☕ Java</label>
+            </div>
+            <div class="skill-pill">
+                <input type="checkbox" id="skill_cpp" name="skills" value="skill_cpp">
+                <label for="skill_cpp">⚡ C++</label>
+            </div>
+            <div class="skill-pill">
+                <input type="checkbox" id="skill_javascript" name="skills" value="skill_javascript">
+                <label for="skill_javascript">🟨 JavaScript</label>
+            </div>
+            <div class="skill-pill">
+                <input type="checkbox" id="skill_sql" name="skills" value="skill_sql">
+                <label for="skill_sql">🗄️ SQL & DBs</label>
+            </div>
+            <div class="skill-pill">
+                <input type="checkbox" id="skill_html_css" name="skills" value="skill_html_css">
+                <label for="skill_html_css">🌐 HTML5 / CSS3</label>
+            </div>
+            <div class="skill-pill">
+                <input type="checkbox" id="skill_machine_learning" name="skills" value="skill_machine_learning">
+                <label for="skill_machine_learning">🧠 Machine Learning</label>
+            </div>
+            <div class="skill-pill">
+                <input type="checkbox" id="skill_data_analysis" name="skills" value="skill_data_analysis">
+                <label for="skill_data_analysis">📊 Data Analytics (Pandas)</label>
+            </div>
+            <div class="skill-pill">
+                <input type="checkbox" id="skill_network_security" name="skills" value="skill_network_security">
+                <label for="skill_network_security">🛡️ Network Security</label>
+            </div>
+            <div class="skill-pill">
+                <input type="checkbox" id="skill_linux_git" name="skills" value="skill_linux_git">
+                <label for="skill_linux_git">🐧 Linux & Git</label>
+            </div>
+            <div class="skill-pill">
+                <input type="checkbox" id="skill_cloud_basics" name="skills" value="skill_cloud_basics">
+                <label for="skill_cloud_basics">☁️ Cloud Basics</label>
+            </div>
+        </div>
+
+        <!-- Section 5: Soft Skills & Aptitude -->
+        <div class="form-group-title" style="margin-top: 2.5rem;">
+            <div class="step-num">5</div>
+            <div>Cognitive Style & Problem Solving</div>
+        </div>
+
+        <div class="grid-2">
+            <div class="rating-item">
+                <div class="rating-header">
+                    <span class="rating-title">🧩 Analytical Problem Solving</span>
+                    <span class="rating-value-badge" id="problem_solving_score_badge">3 / 5</span>
+                </div>
+                <input type="range" id="problem_solving_score" name="problem_solving_score" min="1" max="5" value="3">
+                <span class="field-hint">Enjoying puzzles, debugging complex logic, debugging errors</span>
+            </div>
+
+            <div class="rating-item">
+                <div class="rating-header">
+                    <span class="rating-title">📐 Abstract & Mathematical Thinking</span>
+                    <span class="rating-value-badge" id="abstract_thinking_score_badge">3 / 5</span>
+                </div>
+                <input type="range" id="abstract_thinking_score" name="abstract_thinking_score" min="1" max="5" value="3">
+                <span class="field-hint">Formulating abstract models, formulas, and hypotheses</span>
+            </div>
+
+            <div class="rating-item">
+                <div class="rating-header">
+                    <span class="rating-title">🎨 Visual & Creative Design Intuition</span>
+                    <span class="rating-value-badge" id="creative_design_score_badge">3 / 5</span>
+                </div>
+                <input type="range" id="creative_design_score" name="creative_design_score" min="1" max="5" value="3">
+                <span class="field-hint">Layout aesthetics, user experience, typography, interface flow</span>
+            </div>
+
+            <div class="rating-item">
+                <div class="rating-header">
+                    <span class="rating-title">🏛️ System Architecture Mindset</span>
+                    <span class="rating-value-badge" id="system_architecture_score_badge">3 / 5</span>
+                </div>
+                <input type="range" id="system_architecture_score" name="system_architecture_score" min="1" max="5" value="3">
+                <span class="field-hint">Big-picture system decomposition, components, scalability</span>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div style="margin-top: 3rem; text-align: center;">
+            <button type="submit" class="btn btn-primary" style="font-size: 1.15rem; padding: 1rem 3rem; border-radius: var(--radius-full); box-shadow: var(--shadow-glow);">
+                🔍 Generate Intelligent Career Recommendation
+            </button>
+            <p style="margin-top: 0.75rem; font-size: 0.85rem;">
+                Your inputs are processed securely by our Random Forest model and saved to your history.
+            </p>
+        </div>
+    </form>
+</div>
+{% endblock %}

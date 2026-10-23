@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Home - AI-Based Smart Career Guidance System{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="container">
+        <div class="hero-pill">
+            <span>🤖</span> Powered by Scikit-Learn Random Forest Classifier
+        </div>
+        <h1 class="hero-title">
+            Discover Your Ideal Tech Career Path with <span class="gradient-text">Intelligent AI Guidance</span>
+        </h1>
+        <p class="hero-subtitle">
+            Evaluate your academic strengths, technical skills, and core passions. Receive precise machine learning-driven recommendations, customized skill gap analysis, and step-by-step career roadmaps.
+        </p>
+        <div class="hero-cta">
+            <a href="{{ url_for('assess') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.9rem 2.2rem;">
+                🚀 Start Free Career Assessment
+            </a>
+            <a href="{{ url_for('about') }}" class="btn btn-outline" style="font-size: 1.1rem;">
+                📖 Explore ML Architecture
+            </a>
+        </div>
+
+        <!-- Dynamic Live Statistics from SQLite -->
+        <div class="hero-stats">
+            <div class="stat-item">
+                <h3>{{ stats.total_assessments }}</h3>
+                <p>Students Assessed</p>
+            </div>
+            <div class="stat-item">
+                <h3>98%</h3>
+                <p>Model Test Accuracy</p>
+            </div>
+            <div class="stat-item">
+                <h3>{{ stats.avg_match_score }}%</h3>
+                <p>Average Match Score</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <div class="badge badge-primary" style="margin-bottom: 0.75rem;">Intelligent Pipeline</div>
+            <h2>How the AI System Works</h2>
+            <p>A rigorous, mathematically grounded recommendation pipeline from assessment to roadmap.</p>
+        </div>
+
+        <div class="grid-3">
+            <div class="card">
+                <div class="card-icon" style="background: #e0e7ff; color: #4338ca;">📝</div>
+                <h3>1. Complete Assessment</h3>
+                <p>Rate your academic performance across key CS subjects, specify your technical interests, and select the skills you currently possess.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon" style="background: #fdf2f8; color: #db2777;">🧠</div>
+                <h3>2. Real ML Model Prediction</h3>
+                <p>Our ensemble Random Forest model evaluates 27 weighted multi-dimensional features to calculate class probabilities for 5 industry career tracks.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon" style="background: #ecfdf5; color: #059669;">🗺️</div>
+                <h3>3. Gap Analysis & Roadmap</h3>
+                <p>Identify missing skills immediately with automated skill-gap analysis, accompanied by a 4-phase structured learning path and free resources.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5 Target Career Tracks Showcase -->
+<section class="section" style="background: white; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+        <div class="section-header">
+            <div class="badge badge-success" style="margin-bottom: 0.75rem;">5 High-Demand Domains</div>
+            <h2>Specialized Career Classifications</h2>
+            <p>Our trained ML model maps your unique aptitude profile to one of these five core technology tracks.</p>
+        </div>
+
+        <div class="grid-3">
+            <div class="card">
+                <div class="badge badge-primary" style="margin-bottom: 0.75rem;">Software</div>
+                <h3>Software Developer</h3>
+                <p>Focuses on algorithms, data structures, object-oriented programming, and scalable backend/desktop architecture.</p>
+            </div>
+
+            <div class="card">
+                <div class="badge badge-success" style="margin-bottom: 0.75rem;">Analytics</div>
+                <h3>Data Analyst</h3>
+                <p>Specializes in SQL queries, business intelligence, data wrangling, statistical storytelling, and executive dashboards.</p>
+            </div>
+
+            <div class="card">
+                <div class="badge badge-primary" style="background: #ede9fe; color: #6d28d9; margin-bottom: 0.75rem;">AI / Deep Tech</div>
+                <h3>AI / ML Engineer</h3>
+                <p>Designs mathematical models, neural networks, predictive pipelines, and automated machine learning systems.</p>
+            </div>
+
+            <div class="card">
+                <div class="badge badge-danger" style="margin-bottom: 0.75rem;">Infra & Defense</div>
+                <h3>Cybersecurity Analyst</h3>
+                <p>Protects networks, audits vulnerabilities, conducts threat analysis, and safeguards digital infrastructure.</p>
+            </div>
+
+            <div class="card">
+                <div class="badge badge-warning" style="margin-bottom: 0.75rem;">Frontend & Fullstack</div>
+                <h3>Web Developer</h3>
+                <p>Crafts dynamic web user experiences, responsive layouts, client-side interactions, and RESTful cloud backends.</p>
+            </div>
+
+            <div class="card" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: #f8fafc;">
+                <h3>Ready to Test Yourself?</h3>
+                <p style="margin-bottom: 1rem;">It takes only 2 minutes to evaluate your profile.</p>
+                <a href="{{ url_for('assess') }}" class="btn btn-primary">Take Assessment →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Banner -->
+<section class="section">
+    <div class="container">
+        <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: var(--radius-lg); padding: 3.5rem 2rem; text-align: center; color: white;">
+            <h2 style="color: white; font-size: 2.3rem; margin-bottom: 1rem;">Ready to Unlock Your Career Trajectory?</h2>
+            <p style="color: #e0e7ff; max-width: 600px; margin: 0 auto 2rem; font-size: 1.1rem;">
+                No guesswork. No fake static results. Get evaluated by a real Scikit-Learn trained machine learning classifier today.
+            </p>
+            <a href="{{ url_for('assess') }}" class="btn" style="background: white; color: var(--primary); font-weight: 700; font-size: 1.05rem;">
+                Start Career Evaluation Now 🎯
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

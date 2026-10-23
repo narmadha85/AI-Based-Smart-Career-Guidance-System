@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Assessment History - AI-Based Career Guidance{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 style="font-size: 2.2rem; margin-bottom: 0.35rem;">Candidate Assessment Records</h1>
+            <p>Historical evaluation entries saved persistently in the SQLite database.</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+            <a href="{{ url_for('assess') }}" class="btn btn-primary" style="font-size: 0.95rem;">
+                + New Career Assessment
+            </a>
+        </div>
+    </div>
+
+    <!-- Search / Filter Input -->
+    <div style="margin-bottom: 1.5rem;">
+        <input type="text" id="historySearch" class="form-control" placeholder="🔍 Search candidate by name, career, or education level..." style="max-width: 450px;">
+    </div>
+
+    {% if assessments %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student Name</th>
+                        <th>Education Level</th>
+                        <th>Interest Focus</th>
+                        <th>Recommended Career</th>
+                        <th>Confidence</th>
+                        <th>Assessment Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    {% for item in assessments %}
+                        <tr>
+                            <td>#{{ item.id }}</td>
+                            <td><strong>{{ item.student_name }}</strong></td>
+                            <td style="font-size: 0.85rem; color: var(--text-muted);">{{ item.education_level }}</td>
+                            <td style="font-size: 0.85rem;">{{ item.primary_interest }}</td>
+                            <td>
+                                {% if item.predicted_career == 'AI/ML Engineer' %}
+                                    <span class="badge" style="background: #ede9fe; color: #6d28d9;">🤖 {{ item.predicted_career }}</span>
+                                {% elif item.predicted_career == 'Cybersecurity Analyst' %}
+                                    <span class="badge badge-danger">🛡️ {{ item.predicted_career }}</span>
+                                {% elif item.predicted_career == 'Software Developer' %}
+                                    <span class="badge badge-primary">💻 {{ item.predicted_career }}</span>
+                                {% elif item.predicted_career == 'Data Analyst' %}
+                                    <span class="badge badge-success">📊 {{ item.predicted_career }}</span>
+                                {% else %}
+                                    <span class="badge badge-warning">🌐 {{ item.predicted_career }}</span>
+                                {% endif %}
+                            </td>
+                            <td><strong>{{ item.match_score }}%</strong></td>
+                            <td style="font-size: 0.825rem; color: var(--text-muted);">{{ item.created_at }}</td>
+                            <td>
+                                <a href="{{ url_for('results', assessment_id=item.id) }}" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                                    View Report →
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="card" style="text-align: center; padding: 4rem 2rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
+            <h3>No Assessment Records Found</h3>
+            <p style="margin-bottom: 1.5rem;">Be the first student to complete the career evaluation questionnaire!</p>
+            <a href="{{ url_for('assess') }}" class="btn btn-primary">Start Career Assessment</a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

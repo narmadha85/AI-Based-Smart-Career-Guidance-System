@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI-Based Smart Career Guidance & Skill Recommendation System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+    <!-- Sticky Navigation Bar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="{{ url_for('index') }}" class="brand">
+                <div class="brand-icon">⚡</div>
+                <div class="brand-text">Career<span>AI</span></div>
+            </a>
+            <ul class="nav-links">
+                <li class="nav-item"><a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Home</a></li>
+                <li class="nav-item"><a href="{{ url_for('assess') }}" class="{% if request.endpoint == 'assess' %}active{% endif %}">Career Assessment</a></li>
+                <li class="nav-item"><a href="{{ url_for('history') }}" class="{% if request.endpoint == 'history' %}active{% endif %}">Saved History</a></li>
+                <li class="nav-item"><a href="{{ url_for('about') }}" class="{% if request.endpoint == 'about' %}active{% endif %}">ML Architecture & Info</a></li>
+                <li class="nav-item"><a href="{{ url_for('assess') }}" class="btn-nav">Take Test →</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash Messages Container -->
+    <div class="container" style="margin-top: 1.5rem;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Dynamic Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Global Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <h3 style="color: white; margin-bottom: 0.5rem;">CareerAI System</h3>
+                    <p style="max-width: 400px; color: #94a3b8;">
+                        An AI-powered academic and skill evaluation platform predicting high-confidence career trajectories using Machine Learning.
+                    </p>
+                </div>
+                <div>
+                    <h4 style="color: white; margin-bottom: 0.75rem;">Target Career Domains</h4>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.9rem;">
+                        <li><a href="{{ url_for('about') }}">Software Developer</a></li>
+                        <li><a href="{{ url_for('about') }}">Data Analyst</a></li>
+                        <li><a href="{{ url_for('about') }}">AI / ML Engineer</a></li>
+                        <li><a href="{{ url_for('about') }}">Cybersecurity Analyst</a></li>
+                        <li><a href="{{ url_for('about') }}">Full-Stack Web Developer</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: white; margin-bottom: 0.75rem;">Technology Stack</h4>
+                    <p style="font-size: 0.85rem; line-height: 1.8;">
+                        • Python 3 & Flask<br>
+                        • Scikit-Learn & Random Forest<br>
+                        • Pandas & NumPy<br>
+                        • SQLite3 & Jinja2
+                    </p>
+                </div>
+            </div>
+            <div class="footer-copy">
+                &copy; AI-Based Smart Career Guidance and Skill Recommendation Mini Project. Developed for academic demonstration.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Client-side Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

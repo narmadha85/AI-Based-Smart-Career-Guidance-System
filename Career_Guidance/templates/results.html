@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Career Guidance Report: {{ record.predicted_career }} - CareerAI{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+    <!-- Top Action Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <span class="badge badge-success">Assessment Completed</span>
+            <span style="font-size: 0.9rem; color: var(--text-muted); margin-left: 0.5rem;">
+                Date: {{ record.created_at }} | Candidate: <strong>{{ record.student_name }}</strong>
+            </span>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+            <button id="printReportBtn" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.5rem 1.25rem;">
+                🖨️ Print / Save Report (PDF)
+            </button>
+            <a href="{{ url_for('assess') }}" class="btn btn-outline" style="font-size: 0.9rem; padding: 0.5rem 1.25rem;">
+                🔄 New Assessment
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Results Hero -->
+    <div class="results-hero">
+        <span class="badge" style="background: rgba(255,255,255,0.2); color: white; margin-bottom: 0.75rem;">
+            ⭐ Top Machine Learning Recommendation
+        </span>
+        <h1>{{ record.predicted_career }}</h1>
+        <p style="font-size: 1.15rem; max-width: 750px;">
+            {{ profile.tagline }}
+        </p>
+
+        <div class="recommendation-banner">
+            <div>
+                <h3 style="color: white; margin-bottom: 0.4rem; font-size: 1.3rem;">Primary Match Verdict</h3>
+                <p style="color: #cbd5e1; font-size: 0.95rem; max-width: 650px;">
+                    Based on your high affinity for {{ record.primary_interest }}, academic metrics, and technical skills, our Random Forest classifier determined this domain as your optimal career fit with a confidence score of <strong>{{ record.match_score }}%</strong>.
+                </p>
+                <div style="margin-top: 0.75rem; display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.85rem; color: #a5b4fc;">
+                    <span>💼 <strong>Industry Demand:</strong> {{ profile.market_demand }}</span>
+                    <span>💰 <strong>Avg Salary Outlook:</strong> {{ profile.avg_salary_range }}</span>
+                </div>
+            </div>
+            <div class="score-circle">
+                <div class="score-number">{{ record.match_score }}%</div>
+                <div class="score-label">Match Score</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Two Column Layout: Confidence Scores & Skill Gap Analysis -->
+    <div class="grid-2" style="margin-bottom: 2.5rem;">
+        
+        <!-- Column 1: Multi-Career Confidence Scores -->
+        <div class="card">
+            <h3 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                📊 Model Confidence Distribution
+            </h3>
+            <p style="font-size: 0.875rem; margin-bottom: 1.5rem;">
+                Probabilities predicted across all 5 career domains by the trained ensemble model:
+            </p>
+
+            {% for career_name, score in sorted_scores %}
+                <div class="score-bar-group">
+                    <div class="score-bar-header">
+                        <span>
+                            {% if career_name == record.predicted_career %}
+                                <strong>{{ career_name }}</strong> <span class="badge badge-primary" style="font-size: 0.7rem;">Top Choice</span>
+                            {% else %}
+                                {{ career_name }}
+                            {% endif %}
+                        </span>
+                        <span><strong>{{ score }}%</strong></span>
+                    </div>
+                    <div class="score-bar-track">
+                        <div class="score-bar-fill" style="width: {{ score }}%; {% if career_name != record.predicted_career %}background: #94a3b8;{% endif %}"></div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div style="margin-top: 1.5rem; background: #f8fafc; padding: 1rem; border-radius: var(--radius-sm); border-left: 3px solid var(--primary); font-size: 0.825rem; color: var(--text-muted);">
+                💡 <strong>How it is calculated:</strong> Probabilities are computed via <code>predict_proba()</code> by averaging class tree votes across 150 individual decision trees in the Random Forest.
+            </div>
+        </div>
+
+        <!-- Column 2: Automated Skill Gap Analysis -->
+        <div class="card">
+            <h3 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                🎯 Skill Gap Analysis
+            </h3>
+            <p style="font-size: 0.875rem; margin-bottom: 1.25rem;">
+                Comparison between your current capabilities and the core technical expectations for <strong>{{ record.predicted_career }}</strong>:
+            </p>
+
+            <div style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; padding: 0.75rem 1rem; border-radius: var(--radius-sm);">
+                <div>
+                    <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Readiness Index:</span>
+                    <div style="font-weight: 700; color: var(--text-main);">{{ gap.readiness_status }}</div>
+                </div>
+                <div class="badge badge-primary" style="font-size: 0.9rem;">
+                    {{ gap.owned_count }} / {{ gap.total_required }} Skills
+                </div>
+            </div>
+
+            <!-- Skills Owned -->
+            <div style="margin-bottom: 1.25rem;">
+                <h4 style="font-size: 0.95rem; color: #065f46; margin-bottom: 0.5rem;">
+                    ✅ Skills You Already Have ({{ gap.owned_count }}):
+                </h4>
+                {% if gap.owned_skills %}
+                    <div class="gap-tags-container">
+                        {% for skill in gap.owned_skills %}
+                            <span class="tag-owned">✓ {{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p style="font-size: 0.85rem; font-style: italic;">No direct matching prerequisite skills selected yet. The roadmap below will guide you from scratch!</p>
+                {% endif %}
+            </div>
+
+            <!-- Missing Skills -->
+            <div>
+                <h4 style="font-size: 0.95rem; color: #92400e; margin-bottom: 0.5rem;">
+                    ⚠️ Skills You Need to Acquire ({{ gap.missing_count }}):
+                </h4>
+                {% if gap.missing_skills %}
+                    <div class="gap-tags-container">
+                        {% for skill in gap.missing_skills %}
+                            <span class="tag-missing">+ {{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <span class="badge badge-success">🎉 Congratulations! You have acquired all core baseline skills!</span>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Structured 4-Phase Learning Roadmap -->
+    <div class="card" style="margin-bottom: 2.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap;">
+            <h3>🗺️ Step-by-Step 4-Phase Learning Roadmap</h3>
+            <span class="badge badge-primary">24-Week Career Blueprint</span>
+        </div>
+        <p style="font-size: 0.9rem; margin-bottom: 2rem;">
+            Follow this sequential, industry-aligned learning curve to close your skill gaps and become production-ready.
+        </p>
+
+        <div class="timeline">
+            {% for step in profile.roadmap %}
+                <div class="timeline-step">
+                    <div class="step-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap;">
+                            <h4>{{ step.phase }}</h4>
+                            <span class="badge badge-warning" style="font-size: 0.75rem;">⏱️ {{ step.duration }}</span>
+                        </div>
+                        <div class="step-meta">🎯 <strong>Core Objective:</strong> {{ step.focus }}</div>
+                        
+                        <div style="font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem; color: var(--text-main);">Curriculum Topics:</div>
+                        <ul class="step-topics">
+                            {% for topic in step.topics %}
+                                <li>{{ topic }}</li>
+                            {% endfor %}
+                        </ul>
+
+                        <div class="step-project">
+                            <strong>🏆 Milestone Project:</strong> {{ step.milestone_project }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Curated Free Learning Resources & Typical Roles -->
+    <div class="grid-2">
+        <!-- Learning Resources -->
+        <div class="card">
+            <h3 style="margin-bottom: 0.5rem;">📚 Recommended Free Learning Resources</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 1.25rem;">Top rated, free certifications and documentation to master this domain:</p>
+
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem;">
+                {% for res in profile.free_resources %}
+                    <li style="background: #f8fafc; border: 1px solid var(--border-color); padding: 0.85rem 1rem; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; font-size: 0.925rem; color: var(--text-main);">{{ res.title }}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Provider: {{ res.provider }}</div>
+                        </div>
+                        <a href="{{ res.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                            Access Course ↗
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Typical Industry Roles & Demand -->
+        <div class="card">
+            <h3 style="margin-bottom: 0.5rem;">💼 Career Profile & Market Insights</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 1.25rem;">Target job titles and industry domain details:</p>
+
+            <div style="margin-bottom: 1.25rem;">
+                <div style="font-weight: 600; font-size: 0.875rem; margin-bottom: 0.5rem;">Target Job Titles:</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+                    {% for role in profile.typical_roles %}
+                        <span class="badge" style="background: #e2e8f0; color: #334155;">{{ role }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1.25rem;">
+                <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--text-main);">About This Career</h4>
+                <p style="font-size: 0.875rem; line-height: 1.6; color: var(--text-muted);">
+                    {{ profile.overview }}
+                </p>
+            </div>
+
+            <div style="margin-top: 1.5rem; text-align: center;">
+                <a href="{{ url_for('history') }}" class="btn btn-outline" style="width: 100%;">
+                    📋 View All Assessment History
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
